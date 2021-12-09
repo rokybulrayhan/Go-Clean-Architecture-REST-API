@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -16,8 +17,10 @@ func (mw *MiddlewareManager) CSRF(next echo.HandlerFunc) echo.HandlerFunc {
 		if !mw.cfg.Server.CSRF {
 			return next(ctx)
 		}
-
+		fmt.Println(ctx.Request().Header)
 		token := ctx.Request().Header.Get(csrf.CSRFHeader)
+		fmt.Println("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOo")
+		fmt.Println(token)
 		if token == "" {
 			mw.logger.Errorf("CSRF Middleware get CSRF header, Token: %s, Error: %s, RequestId: %s",
 				token,

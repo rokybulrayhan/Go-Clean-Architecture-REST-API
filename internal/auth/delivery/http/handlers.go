@@ -2,6 +2,7 @@ package http
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"net/http"
 
@@ -167,6 +168,7 @@ func (h *authHandlers) Update() echo.HandlerFunc {
 		defer span.Finish()
 
 		uID, err := uuid.Parse(c.Param("user_id"))
+		fmt.Println(uID)
 		if err != nil {
 			utils.LogResponseError(c, h.logger, err)
 			return c.JSON(httpErrors.ErrorResponse(err))
@@ -175,10 +177,18 @@ func (h *authHandlers) Update() echo.HandlerFunc {
 		user := &models.User{}
 		user.UserID = uID
 
+		fmt.Println()
+		fmt.Println(user)
+
 		if err = utils.ReadRequest(c, user); err != nil {
+			//	fmt.Println(c.Bind(user))
+
 			utils.LogResponseError(c, h.logger, err)
+			//	fmt.Println("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII")
 			return c.JSON(httpErrors.ErrorResponse(err))
 		}
+
+		fmt.Println(user)
 
 		updatedUser, err := h.authUC.Update(ctx, user)
 		if err != nil {

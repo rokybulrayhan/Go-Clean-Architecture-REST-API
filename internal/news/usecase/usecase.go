@@ -89,6 +89,7 @@ func (u *newsUC) Update(ctx context.Context, news *models.News) (*models.News, e
 func (u *newsUC) GetNewsByID(ctx context.Context, newsID uuid.UUID) (*models.NewsBase, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "newsUC.GetNewsByID")
 	defer span.Finish()
+	fmt.Println("useCase........................2")
 
 	newsBase, err := u.redisRepo.GetNewsByIDCtx(ctx, u.getKeyWithPrefix(newsID.String()))
 	if err != nil {

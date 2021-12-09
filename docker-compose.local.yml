@@ -9,12 +9,11 @@ services:
     restart: always
     networks:
       - web_api
-
   postgesql:
-    image: postgres:12-alpine
+    image: postgres:latest
     container_name: api_postgesql
     ports:
-      - "5432:5432"
+      - "5436:5432"
     restart: always
     environment:
       - POSTGRES_USER=postgres

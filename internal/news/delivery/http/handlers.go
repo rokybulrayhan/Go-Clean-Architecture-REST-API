@@ -1,6 +1,7 @@
 package http
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/google/uuid"
@@ -36,12 +37,14 @@ func NewNewsHandlers(cfg *config.Config, newsUC news.UseCase, logger logger.Logg
 // @Success 201 {object} models.News
 // @Router /news/create [post]
 func (h newsHandlers) Create() echo.HandlerFunc {
+	//	fmt.Println("jjjjjjjjjjjjjjjjjjjjjjjj")
 	return func(c echo.Context) error {
 		span, ctx := opentracing.StartSpanFromContext(utils.GetRequestCtx(c), "newsHandlers.Create")
 		defer span.Finish()
 
 		n := &models.News{}
 		if err := c.Bind(n); err != nil {
+
 			utils.LogResponseError(c, h.logger, err)
 			return c.JSON(httpErrors.ErrorResponse(err))
 		}
@@ -106,6 +109,7 @@ func (h newsHandlers) GetByID() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		span, ctx := opentracing.StartSpanFromContext(utils.GetRequestCtx(c), "newsHandlers.GetByID")
 		defer span.Finish()
+		fmt.Println("useCase........................1")
 
 		newsUUID, err := uuid.Parse(c.Param("news_id"))
 		if err != nil {
