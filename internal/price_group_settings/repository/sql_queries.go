@@ -15,6 +15,10 @@ const (
 					RETURNING *`
 
 	getNewsByID = `SELECT *
+FROM price_group_settings
+WHERE id = $1`
+
+	getAllPriceGroup = `SELECT *
 FROM price_group_settings`
 
 	deleteNews = `DELETE FROM news WHERE news_id = $1`

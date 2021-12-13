@@ -22,7 +22,11 @@ import (
 	newsHttp "github.com/AleksK1NG/api-mc/internal/news/delivery/http"
 	newsRepository "github.com/AleksK1NG/api-mc/internal/news/repository"
 	newsUseCase "github.com/AleksK1NG/api-mc/internal/news/usecase"
+	priceGroupHttp "github.com/AleksK1NG/api-mc/internal/price_group_settings/delivery/http"
+	priceGroupRepository "github.com/AleksK1NG/api-mc/internal/price_group_settings/repository"
+	priceGroupUseCase "github.com/AleksK1NG/api-mc/internal/price_group_settings/usecase"
 	sessionRepository "github.com/AleksK1NG/api-mc/internal/session/repository"
+
 	"github.com/AleksK1NG/api-mc/internal/session/usecase"
 	"github.com/AleksK1NG/api-mc/pkg/metric"
 	"github.com/AleksK1NG/api-mc/pkg/utils"
@@ -48,6 +52,10 @@ func (s *Server) MapHandlers(e *echo.Echo) error {
 	aAWSRepo := authRepository.NewAuthAWSRepository(s.awsClient)
 	authRedisRepo := authRepository.NewAuthRedisRepo(s.redisClient)
 	newsRedisRepo := newsRepository.NewNewsRedisRepo(s.redisClient)
+	//price group setting
+
+	//priceGroupRedisRepo := priceGroupRepository.NewPriceGroupRepository(s.redisClient)
+	priceGroupRepo := priceGroupRepository.NewPriceGroupRepository(s.db)
 
 	// Init useCases
 	authUC := authUseCase.NewAuthUseCase(s.cfg, aRepo, authRedisRepo, aAWSRepo, s.logger)
@@ -55,10 +63,15 @@ func (s *Server) MapHandlers(e *echo.Echo) error {
 	commUC := commentsUseCase.NewCommentsUseCase(s.cfg, cRepo, s.logger)
 	sessUC := usecase.NewSessionUseCase(sRepo, s.cfg)
 
+	//price group without redis
+	priceGroupUC := priceGroupUseCase.NewPriceGroupUseCase(s.cfg, priceGroupRepo, s.logger)
+
 	// Init handlers
 	authHandlers := authHttp.NewAuthHandlers(s.cfg, authUC, sessUC, s.logger)
 	newsHandlers := newsHttp.NewNewsHandlers(s.cfg, newsUC, s.logger)
 	commHandlers := commentsHttp.NewCommentsHandlers(s.cfg, commUC, s.logger)
+	//price group handler
+	priceGroupHandlers := priceGroupHttp.NewPriceGroupHandlers(s.cfg, priceGroupUC, s.logger)
 
 	mw := apiMiddlewares.NewMiddlewareManager(sessUC, authUC, s.cfg, []string{"*"}, s.logger)
 
@@ -101,10 +114,12 @@ func (s *Server) MapHandlers(e *echo.Echo) error {
 	authGroup := v1.Group("/auth")
 	newsGroup := v1.Group("/news")
 	commGroup := v1.Group("/comments")
+	price := v1.Group("/price")
 
 	authHttp.MapAuthRoutes(authGroup, authHandlers, mw)
 	newsHttp.MapNewsRoutes(newsGroup, newsHandlers, mw)
 	commentsHttp.MapCommentsRoutes(commGroup, commHandlers, mw)
+	priceGroupHttp.MapPriceGroupRoutes(price, priceGroupHandlers, mw)
 
 	health.GET("", func(c echo.Context) error {
 		s.logger.Infof("Health check RequestID: %s", utils.GetRequestID(c))

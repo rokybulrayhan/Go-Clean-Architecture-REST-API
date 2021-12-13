@@ -68,6 +68,8 @@ func (h newsHandlers) Create() echo.HandlerFunc {
 // @Param id path int true "news_id"
 // @Success 200 {object} models.News
 // @Router /news/{id} [put]
+
+/****rayhan********************/
 func (h newsHandlers) Update() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		span, ctx := opentracing.StartSpanFromContext(utils.GetRequestCtx(c), "newsHandlers.Update")

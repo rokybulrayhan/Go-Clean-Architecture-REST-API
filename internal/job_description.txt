@@ -1,0 +1,46 @@
+Rokybul Rayhan Chowdhury
+Junior Software Engineer
+
+1. Developing contact , purchase microservice for the ERP project using golang.
+2. Developing TDD.
+3. Designing, developing, integrating cross platform mobile app using React Native for Ejbangladesh project.
+4. Designing, developing, integrating cross platform mobile app using React Native for Gonojobs project.
+5. Designing, developing, integrating  and supporting UI for the Gonojobs web project using Angular.
+6. Frontend, Backend development support to business needs.
+
+Responsibilities
+->Participate in the entire application lifecycle, focusing on coding and debugging
+->Write clean code to develop functional web applications
+->Troubleshoot and debug applications
+->Perform tdd tests to optimize performance
+->Manage cutting-edge technologies to improve legacy applications
+->Collaborate with Front-end developers to integrate user-facing elements with server side logic
+->Gather and address technical and design requirements
+->Provide training and support to internal teams
+->Build reusable code and libraries for future use
+->Liaise with developers, designers and system administrators to identify new features
+->Follow emerging technologies
+Requirements
+Proven work experience as a Back-end developer
+In-depth understanding of the entire web development process (design, development and deployment)
+Hands on experience with programming languages like golang
+Working knowledge of echo,fiber framework
+Familiarity with front-end languages (e.g. HTML, JavaScript and CSS)
+Excellent analytical and time management skills
+Teamwork skills with a problem-solving attitude
+BSc degree in Computer Science or relevant field
+
+1. Build pixel-perfect, buttery smooth UIs across both web and mobile platforms.
+2. Leverage APIs for deep integrations with both platforms.
+3. Diagnose and fix bugs and performance bottlenecks for performance.
+4. Maintain code and write automated tests to ensure the product is of the highest quality.
+5. Transition existing React web apps to React Native.
+
+
+
+1. Designing, developing, integrating, and supporting UI for the ERP project using Angular.
+2. Developing Backend and Frontend for Ejbangladesh project.
+3. Designing, developing, integrating cross platform mobile app using React Native for Ejbangladesh project.
+4. Designing, developing, integrating cross platform mobile app using React Native for Gonojobs project.
+5. Designing, developing, integrating  and supporting UI for the Gonojobs web project using Angular.
+6. Frontend, Backend development support to business needs.
