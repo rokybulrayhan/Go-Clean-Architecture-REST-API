@@ -10,58 +10,58 @@ import (
 	"github.com/pkg/errors"
 
 	"github.com/AleksK1NG/api-mc/internal/models"
-	"github.com/AleksK1NG/api-mc/internal/news"
+	"github.com/AleksK1NG/api-mc/internal/price_group_settings"
 )
 
 // News redis repository
-type newsRedisRepo struct {
+type priceGroupRedisRepo struct {
 	redisClient *redis.Client
 }
 
 // News redis repository constructor
-func NewNewsRedisRepo(redisClient *redis.Client) news.RedisRepository {
-	return &newsRedisRepo{redisClient: redisClient}
+func NewNewsRedisRepo(redisClient *redis.Client) price_group_settings.RedisRepository {
+	return &priceGroupRedisRepo{redisClient: redisClient}
 }
 
 // Get new by id
-func (n *newsRedisRepo) GetNewsByIDCtx(ctx context.Context, key string) (*models.NewsBase, error) {
-	span, ctx := opentracing.StartSpanFromContext(ctx, "newsRedisRepo.GetNewsByIDCtx")
+func (n *priceGroupRedisRepo) GetNewsByIDCtx(ctx context.Context, key string) (*models.NewsBase, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "priceGroupRedisRepo.GetNewsByIDCtx")
 	defer span.Finish()
 
-	newsBytes, err := n.redisClient.Get(ctx, key).Bytes()
+	priceGroupBytes, err := n.redisClient.Get(ctx, key).Bytes()
 	if err != nil {
-		return nil, errors.Wrap(err, "newsRedisRepo.GetNewsByIDCtx.redisClient.Get")
+		return nil, errors.Wrap(err, "priceGroupRedisRepo.GetNewsByIDCtx.redisClient.Get")
 	}
-	newsBase := &models.NewsBase{}
-	if err = json.Unmarshal(newsBytes, newsBase); err != nil {
-		return nil, errors.Wrap(err, "newsRedisRepo.GetNewsByIDCtx.json.Unmarshal")
+	priceGroupBase := &models.NewsBase{}
+	if err = json.Unmarshal(priceGroupBytes, priceGroupBase); err != nil {
+		return nil, errors.Wrap(err, "priceGroupRedisRepo.GetNewsByIDCtx.json.Unmarshal")
 	}
 
-	return newsBase, nil
+	return priceGroupBase, nil
 }
 
-// Cache news item
-func (n *newsRedisRepo) SetNewsCtx(ctx context.Context, key string, seconds int, news *models.NewsBase) error {
-	span, ctx := opentracing.StartSpanFromContext(ctx, "newsRedisRepo.SetNewsCtx")
+// Cache priceGroup item
+func (n *priceGroupRedisRepo) SetNewsCtx(ctx context.Context, key string, seconds int, priceGroup *models.NewsBase) error {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "priceGroupRedisRepo.SetNewsCtx")
 	defer span.Finish()
 
-	newsBytes, err := json.Marshal(news)
+	priceGroupBytes, err := json.Marshal(priceGroup)
 	if err != nil {
-		return errors.Wrap(err, "newsRedisRepo.SetNewsCtx.json.Marshal")
+		return errors.Wrap(err, "priceGroupRedisRepo.SetNewsCtx.json.Marshal")
 	}
-	if err = n.redisClient.Set(ctx, key, newsBytes, time.Second*time.Duration(seconds)).Err(); err != nil {
-		return errors.Wrap(err, "newsRedisRepo.SetNewsCtx.redisClient.Set")
+	if err = n.redisClient.Set(ctx, key, priceGroupBytes, time.Second*time.Duration(seconds)).Err(); err != nil {
+		return errors.Wrap(err, "priceGroupRedisRepo.SetNewsCtx.redisClient.Set")
 	}
 	return nil
 }
 
 // Delete new item from cache
-func (n *newsRedisRepo) DeleteNewsCtx(ctx context.Context, key string) error {
-	span, ctx := opentracing.StartSpanFromContext(ctx, "newsRedisRepo.DeleteNewsCtx")
+func (n *priceGroupRedisRepo) DeleteNewsCtx(ctx context.Context, key string) error {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "priceGroupRedisRepo.DeleteNewsCtx")
 	defer span.Finish()
 
 	if err := n.redisClient.Del(ctx, key).Err(); err != nil {
-		return errors.Wrap(err, "newsRedisRepo.DeleteNewsCtx.redisClient.Del")
+		return errors.Wrap(err, "priceGroupRedisRepo.DeleteNewsCtx.redisClient.Del")
 	}
 	return nil
 }

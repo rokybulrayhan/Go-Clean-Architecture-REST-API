@@ -23,7 +23,7 @@ func TestNewsRepo_Create(t *testing.T) {
 	sqlxDB := sqlx.NewDb(db, "sqlmock")
 	defer sqlxDB.Close()
 
-	newsRepo := NewPriceGroupRepository(sqlxDB)
+	priceGroupRepo := NewPriceGroupRepository(sqlxDB)
 
 	t.Run("Create", func(t *testing.T) {
 		authorUID := uuid.New()
@@ -32,19 +32,19 @@ func TestNewsRepo_Create(t *testing.T) {
 
 		rows := sqlmock.NewRows([]string{"author_id", "title", "content"}).AddRow(authorUID, title, content)
 
-		news := &models.News{
+		priceGroup := &models.News{
 			AuthorID: authorUID,
 			Title:    title,
 			Content:  content,
 		}
 
-		mock.ExpectQuery(createNews).WithArgs(news.AuthorID, news.Title, news.Content, news.Category).WillReturnRows(rows)
+		mock.ExpectQuery(createNews).WithArgs(priceGroup.AuthorID, priceGroup.Title, priceGroup.Content, priceGroup.Category).WillReturnRows(rows)
 
-		createdNews, err := newsRepo.Create(context.Background(), news)
+		createdNews, err := priceGroupRepo.Create(context.Background(), priceGroup)
 
 		require.NoError(t, err)
 		require.NotNil(t, createdNews)
-		require.Equal(t, news.Title, createdNews.Title)
+		require.Equal(t, priceGroup.Title, createdNews.Title)
 	})
 }
 
@@ -58,33 +58,33 @@ func TestNewsRepo_Update(t *testing.T) {
 	sqlxDB := sqlx.NewDb(db, "sqlmock")
 	defer sqlxDB.Close()
 
-	newsRepo := NewPriceGroupRepository(sqlxDB)
+	priceGroupRepo := NewPriceGroupRepository(sqlxDB)
 
 	t.Run("Update", func(t *testing.T) {
-		newsUID := uuid.New()
+		priceGroupUID := uuid.New()
 		title := "title"
 		content := "content"
 
-		rows := sqlmock.NewRows([]string{"news_id", "title", "content"}).AddRow(newsUID, title, content)
+		rows := sqlmock.NewRows([]string{"priceGroup_id", "title", "content"}).AddRow(priceGroupUID, title, content)
 
-		news := &models.News{
-			NewsID:  newsUID,
+		priceGroup := &models.News{
+			NewsID:  priceGroupUID,
 			Title:   title,
 			Content: content,
 		}
 
-		mock.ExpectQuery(updateNews).WithArgs(news.Title,
-			news.Content,
-			news.ImageURL,
-			news.Category,
-			news.NewsID,
+		mock.ExpectQuery(updateNews).WithArgs(priceGroup.Title,
+			priceGroup.Content,
+			priceGroup.ImageURL,
+			priceGroup.Category,
+			priceGroup.NewsID,
 		).WillReturnRows(rows)
 
-		updatedNews, err := newsRepo.Update(context.Background(), news)
+		updatedNews, err := priceGroupRepo.Update(context.Background(), priceGroup)
 
 		require.NoError(t, err)
 		require.NotNil(t, updateNews)
-		require.Equal(t, updatedNews, news)
+		require.Equal(t, updatedNews, priceGroup)
 	})
 }
 
@@ -98,13 +98,13 @@ func TestNewsRepo_Delete(t *testing.T) {
 	sqlxDB := sqlx.NewDb(db, "sqlmock")
 	defer sqlxDB.Close()
 
-	newsRepo := NewPriceGroupRepository(sqlxDB)
+	priceGroupRepo := NewPriceGroupRepository(sqlxDB)
 
 	t.Run("Delete", func(t *testing.T) {
-		newsUID := uuid.New()
-		mock.ExpectExec(deleteNews).WithArgs(newsUID).WillReturnResult(sqlmock.NewResult(1, 1))
+		priceGroupUID := uuid.New()
+		mock.ExpectExec(deleteNews).WithArgs(priceGroupUID).WillReturnResult(sqlmock.NewResult(1, 1))
 
-		err := newsRepo.Delete(context.Background(), newsUID)
+		err := priceGroupRepo.Delete(context.Background(), priceGroupUID)
 
 		require.NoError(t, err)
 	})

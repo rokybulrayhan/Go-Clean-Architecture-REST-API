@@ -11,10 +11,10 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/AleksK1NG/api-mc/internal/models"
-	"github.com/AleksK1NG/api-mc/internal/news"
+	"github.com/AleksK1NG/api-mc/internal/price_group_settings"
 )
 
-func SetupRedis() news.RedisRepository {
+func SetupRedis() price_group_settings.RedisRepository {
 	mr, err := miniredis.Run()
 	if err != nil {
 		log.Fatal(err)
@@ -23,25 +23,25 @@ func SetupRedis() news.RedisRepository {
 		Addr: mr.Addr(),
 	})
 
-	newsRedisRepo := NewNewsRedisRepo(client)
-	return newsRedisRepo
+	priceGroupRedisRepo := NewNewsRedisRepo(client)
+	return priceGroupRedisRepo
 }
 
 func TestNewsRedisRepo_SetNewsCtx(t *testing.T) {
 	t.Parallel()
 
-	newsRedisRepo := SetupRedis()
+	priceGroupRedisRepo := SetupRedis()
 
 	t.Run("SetNewsCtx", func(t *testing.T) {
-		newsUID := uuid.New()
+		priceGroupUID := uuid.New()
 		key := "key"
 		n := &models.NewsBase{
-			NewsID:  newsUID,
+			NewsID:  priceGroupUID,
 			Title:   "Title",
 			Content: "Content",
 		}
 
-		err := newsRedisRepo.SetNewsCtx(context.Background(), key, 10, n)
+		err := priceGroupRedisRepo.SetNewsCtx(context.Background(), key, 10, n)
 		require.NoError(t, err)
 		require.Nil(t, err)
 	})
@@ -50,41 +50,41 @@ func TestNewsRedisRepo_SetNewsCtx(t *testing.T) {
 func TestNewsRedisRepo_GetNewsByIDCtx(t *testing.T) {
 	t.Parallel()
 
-	newsRedisRepo := SetupRedis()
+	priceGroupRedisRepo := SetupRedis()
 
 	t.Run("GetNewsByIDCtx", func(t *testing.T) {
-		newsUID := uuid.New()
+		priceGroupUID := uuid.New()
 		key := "key"
 		n := &models.NewsBase{
-			NewsID:  newsUID,
+			NewsID:  priceGroupUID,
 			Title:   "Title",
 			Content: "Content",
 		}
 
-		newsBase, err := newsRedisRepo.GetNewsByIDCtx(context.Background(), key)
-		require.Nil(t, newsBase)
+		priceGroupBase, err := priceGroupRedisRepo.GetNewsByIDCtx(context.Background(), key)
+		require.Nil(t, priceGroupBase)
 		require.NotNil(t, err)
 
-		err = newsRedisRepo.SetNewsCtx(context.Background(), key, 10, n)
+		err = priceGroupRedisRepo.SetNewsCtx(context.Background(), key, 10, n)
 		require.NoError(t, err)
 		require.Nil(t, err)
 
-		newsBase, err = newsRedisRepo.GetNewsByIDCtx(context.Background(), key)
+		priceGroupBase, err = priceGroupRedisRepo.GetNewsByIDCtx(context.Background(), key)
 		require.NoError(t, err)
 		require.Nil(t, err)
-		require.NotNil(t, newsBase)
+		require.NotNil(t, priceGroupBase)
 	})
 }
 
 func TestNewsRedisRepo_DeleteNewsCtx(t *testing.T) {
 	t.Parallel()
 
-	newsRedisRepo := SetupRedis()
+	priceGroupRedisRepo := SetupRedis()
 
 	t.Run("SetNewsCtx", func(t *testing.T) {
 		key := "key"
 
-		err := newsRedisRepo.DeleteNewsCtx(context.Background(), key)
+		err := priceGroupRedisRepo.DeleteNewsCtx(context.Background(), key)
 		require.NoError(t, err)
 		require.Nil(t, err)
 	})

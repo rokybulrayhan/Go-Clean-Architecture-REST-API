@@ -10,6 +10,6 @@ import (
 // News redis repository
 type RedisRepository interface {
 	GetNewsByIDCtx(ctx context.Context, key string) (*models.NewsBase, error)
-	SetNewsCtx(ctx context.Context, key string, seconds int, news *models.NewsBase) error
+	SetNewsCtx(ctx context.Context, key string, seconds int, priceGroup *models.NewsBase) error
 	DeleteNewsCtx(ctx context.Context, key string) error
 }
