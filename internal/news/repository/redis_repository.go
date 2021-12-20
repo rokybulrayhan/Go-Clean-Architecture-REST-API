@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"time"
 
 	"github.com/go-redis/redis/v8"
@@ -29,6 +30,7 @@ func (n *newsRedisRepo) GetNewsByIDCtx(ctx context.Context, key string) (*models
 	defer span.Finish()
 
 	newsBytes, err := n.redisClient.Get(ctx, key).Bytes()
+	fmt.Println(key)
 	if err != nil {
 		return nil, errors.Wrap(err, "newsRedisRepo.GetNewsByIDCtx.redisClient.Get")
 	}
@@ -44,8 +46,9 @@ func (n *newsRedisRepo) GetNewsByIDCtx(ctx context.Context, key string) (*models
 func (n *newsRedisRepo) SetNewsCtx(ctx context.Context, key string, seconds int, news *models.NewsBase) error {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "newsRedisRepo.SetNewsCtx")
 	defer span.Finish()
-
+	fmt.Println(" ***********************")
 	newsBytes, err := json.Marshal(news)
+	fmt.Println(" ***********************")
 	if err != nil {
 		return errors.Wrap(err, "newsRedisRepo.SetNewsCtx.json.Marshal")
 	}

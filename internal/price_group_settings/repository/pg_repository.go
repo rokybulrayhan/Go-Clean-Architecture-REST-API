@@ -170,6 +170,7 @@ func (r *priceGroupRepo) GetAllPriceGroupNew(ctx context.Context, filterQuery st
 	if err = rows.Err(); err != nil {
 		return nil, errors.Wrap(err, "newsRepo.GetNews.rows.Err")
 	}
+	//fmt.Printf("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
 
 	return &models.PriceGroupSettingsList{
 		TotalCount: totalCount,

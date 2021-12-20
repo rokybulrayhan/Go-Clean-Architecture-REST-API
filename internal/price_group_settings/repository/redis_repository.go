@@ -19,12 +19,12 @@ type priceGroupRedisRepo struct {
 }
 
 // News redis repository constructor
-func NewNewsRedisRepo(redisClient *redis.Client) price_group_settings.RedisRepository {
+func NewpriceGroupRepo(redisClient *redis.Client) price_group_settings.RedisRepository {
 	return &priceGroupRedisRepo{redisClient: redisClient}
 }
 
 // Get new by id
-func (n *priceGroupRedisRepo) GetNewsByIDCtx(ctx context.Context, key string) (*models.NewsBase, error) {
+func (n *priceGroupRedisRepo) GetPriceGroupCtx(ctx context.Context, key string) (*models.PriceGroupSettingsList, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "priceGroupRedisRepo.GetNewsByIDCtx")
 	defer span.Finish()
 
@@ -32,7 +32,7 @@ func (n *priceGroupRedisRepo) GetNewsByIDCtx(ctx context.Context, key string) (*
 	if err != nil {
 		return nil, errors.Wrap(err, "priceGroupRedisRepo.GetNewsByIDCtx.redisClient.Get")
 	}
-	priceGroupBase := &models.NewsBase{}
+	priceGroupBase := &models.PriceGroupSettingsList{}
 	if err = json.Unmarshal(priceGroupBytes, priceGroupBase); err != nil {
 		return nil, errors.Wrap(err, "priceGroupRedisRepo.GetNewsByIDCtx.json.Unmarshal")
 	}
@@ -41,7 +41,7 @@ func (n *priceGroupRedisRepo) GetNewsByIDCtx(ctx context.Context, key string) (*
 }
 
 // Cache priceGroup item
-func (n *priceGroupRedisRepo) SetNewsCtx(ctx context.Context, key string, seconds int, priceGroup *models.NewsBase) error {
+func (n *priceGroupRedisRepo) SetPriceGroupCtx(ctx context.Context, key string, seconds int, priceGroup *models.PriceGroupSettingsList) error {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "priceGroupRedisRepo.SetNewsCtx")
 	defer span.Finish()
 
@@ -56,10 +56,11 @@ func (n *priceGroupRedisRepo) SetNewsCtx(ctx context.Context, key string, second
 }
 
 // Delete new item from cache
-func (n *priceGroupRedisRepo) DeleteNewsCtx(ctx context.Context, key string) error {
+func (n *priceGroupRedisRepo) DeletePriceGroupCtx(ctx context.Context, key string) error {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "priceGroupRedisRepo.DeleteNewsCtx")
 	defer span.Finish()
-
+	//fmt.Printf(key)
+	//fmt.Printf("LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLl")
 	if err := n.redisClient.Del(ctx, key).Err(); err != nil {
 		return errors.Wrap(err, "priceGroupRedisRepo.DeleteNewsCtx.redisClient.Del")
 	}

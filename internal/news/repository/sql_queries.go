@@ -14,8 +14,17 @@ const (
 					WHERE news_id = $5
 					RETURNING *`
 
-	getNewsByID = `SELECT *
-FROM price_group_settings`
+	getNewsByID = `SELECT n.news_id,
+					n.title,
+					n.content,
+					n.updated_at,
+					n.image_url,
+					n.category,
+					CONCAT(u.first_name, ' ', u.last_name) as author,
+					u.user_id as author_id
+			 FROM news n
+					  LEFT JOIN users u on u.user_id = n.author_id
+			 WHERE news_id = $1`
 
 	deleteNews = `DELETE FROM news WHERE news_id = $1`
 

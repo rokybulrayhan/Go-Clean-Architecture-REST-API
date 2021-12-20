@@ -95,6 +95,8 @@ func (u *newsUC) GetNewsByID(ctx context.Context, newsID uuid.UUID) (*models.New
 	if err != nil {
 		u.logger.Errorf("newsUC.GetNewsByID.GetNewsByIDCtx: %v", err)
 	}
+	fmt.Println("useCase........................2")
+	fmt.Println(newsBase)
 	if newsBase != nil {
 		return newsBase, nil
 	}
@@ -103,6 +105,7 @@ func (u *newsUC) GetNewsByID(ctx context.Context, newsID uuid.UUID) (*models.New
 	if err != nil {
 		return nil, err
 	}
+	fmt.Println(n)
 
 	if err = u.redisRepo.SetNewsCtx(ctx, u.getKeyWithPrefix(newsID.String()), cacheDuration, n); err != nil {
 		u.logger.Errorf("newsUC.GetNewsByID.SetNewsCtx: %s", err)

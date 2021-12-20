@@ -56,6 +56,7 @@ func (s *Server) MapHandlers(e *echo.Echo) error {
 
 	//priceGroupRedisRepo := priceGroupRepository.NewPriceGroupRepository(s.redisClient)
 	priceGroupRepo := priceGroupRepository.NewPriceGroupRepository(s.db)
+	priceGroupRedisRepo := priceGroupRepository.NewpriceGroupRepo(s.redisClient)
 
 	// Init useCases
 	authUC := authUseCase.NewAuthUseCase(s.cfg, aRepo, authRedisRepo, aAWSRepo, s.logger)
@@ -64,7 +65,7 @@ func (s *Server) MapHandlers(e *echo.Echo) error {
 	sessUC := usecase.NewSessionUseCase(sRepo, s.cfg)
 
 	//price group without redis
-	priceGroupUC := priceGroupUseCase.NewPriceGroupUseCase(s.cfg, priceGroupRepo, s.logger)
+	priceGroupUC := priceGroupUseCase.NewPriceGroupUseCase(s.cfg, priceGroupRepo, priceGroupRedisRepo, s.logger)
 
 	// Init handlers
 	authHandlers := authHttp.NewAuthHandlers(s.cfg, authUC, sessUC, s.logger)
