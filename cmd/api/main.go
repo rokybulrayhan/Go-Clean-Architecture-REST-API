@@ -51,9 +51,17 @@ func main() {
 	if err != nil {
 		appLogger.Fatalf("Postgresql init: %s", err)
 	} else {
-		appLogger.Infof("Postgres connected, Status: %#v", psqlDB.Stats())
+		appLogger.Infof("Postgres connected sqlx, Status: %#v", psqlDB.Stats())
 	}
 	defer psqlDB.Close()
+
+	psqlDB2, err := postgres.NewPsqlDB2(cfg)
+	if err != nil {
+		appLogger.Fatalf("Postgresql init: %s", err)
+	} else {
+		appLogger.Infof("Postgres connected bun, Status: %#v", psqlDB2.Stats())
+	}
+	defer psqlDB2.Close()
 
 	redisClient := redis.NewRedisClient(cfg)
 	defer redisClient.Close()
@@ -90,7 +98,7 @@ func main() {
 	defer closer.Close()
 	appLogger.Info("Opentracing connected")
 
-	s := server.NewServer(cfg, psqlDB, redisClient, awsClient, appLogger)
+	s := server.NewServer(cfg, psqlDB, psqlDB2, redisClient, awsClient, appLogger)
 	if err = s.Run(); err != nil {
 		log.Fatal(err)
 	}

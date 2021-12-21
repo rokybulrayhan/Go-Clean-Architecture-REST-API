@@ -2,49 +2,50 @@ package repository
 
 import (
 	"context"
-	"database/sql"
 	"fmt"
 
 	"github.com/AleksK1NG/api-mc/internal/models"
-	"github.com/jmoiron/sqlx"
-	"github.com/pkg/errors"
-
 	"github.com/AleksK1NG/api-mc/internal/price_group_settings"
-	"github.com/AleksK1NG/api-mc/pkg/utils"
+	"github.com/uptrace/bun"
+
 	"github.com/opentracing/opentracing-go"
 )
 
 // Price Group Repository
-type priceGroupRepo struct {
+/*type priceGroupRepo struct {
 	db *sqlx.DB
+}
+*/
+type priceGroupRepo struct {
+	db *bun.DB
 }
 
 // Price Group repository constructor
+/*
 func NewPriceGroupRepository(db *sqlx.DB) price_group_settings.Repository {
+	return &priceGroupRepo{db: db}
+}
+*/
+
+func NewPriceGroupRepository(db *bun.DB) price_group_settings.Repository {
 	return &priceGroupRepo{db: db}
 }
 
 func (r *priceGroupRepo) Create(ctx context.Context, priceGroup *models.PriceGroupSettings) (*models.PriceGroupSettings, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "priceGroupRepo.Create")
 	defer span.Finish()
+	//fmt.Println(priceGroup)
 
-	var n models.PriceGroupSettings
-	if err := r.db.QueryRowxContext(
-		ctx,
-		createPriceGroup,
-		&priceGroup.Name,
-		&priceGroup.Description,
-		&priceGroup.CurrencyType,
-		&priceGroup.Active,
-		&priceGroup.CreatedBy,
-	).StructScan(&n); err != nil {
-		return nil, errors.Wrap(err, "priceGroupRepo.Create.QueryRowxContext")
-	}
+	//n := &models.PriceGroupSettings{}
 
-	return &n, nil
+	m, err := r.db.NewInsert().Model(priceGroup).ExcludeColumn("updated_at", "id", "created_at", "updated_by", "deleted_at").Returning("*").Exec(ctx)
+	fmt.Println(m)
+	fmt.Println(err)
+
+	return priceGroup, nil
 }
 
-func (r *priceGroupRepo) GetAllByNewsID(ctx context.Context, priceGroupID int) (*models.PriceGroupSettings, error) {
+/*func (r *priceGroupRepo) GetAllByNewsID(ctx context.Context, priceGroupID int) (*models.PriceGroupSettings, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "priceGroupRepo.GetNewsByID")
 	defer span.Finish()
 
@@ -55,8 +56,24 @@ func (r *priceGroupRepo) GetAllByNewsID(ctx context.Context, priceGroupID int) (
 
 	return n, nil
 }
+*/
 
-func (r *priceGroupRepo) GetAllPriceGroup(ctx context.Context, query *utils.PaginationQuery) (*models.PriceGroupSettings, error) {
+func (r *priceGroupRepo) GetAllByNewsID(ctx context.Context, priceGroupID int) (*models.PriceGroupSettings, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "priceGroupRepo.GetPriceGroupSettingByID")
+	defer span.Finish()
+	n := &models.PriceGroupSettings{}
+	//fmt.Println(priceGroupID)
+	err := r.db.NewSelect().Model(n).Where("id = ?", priceGroupID).Scan(ctx)
+	if err != nil {
+		fmt.Println(n.ID == 0)
+		fmt.Println(err)
+		return n, err
+	}
+
+	return n, nil
+}
+
+/*func (r *priceGroupRepo) GetAllPriceGroup(ctx context.Context, query *utils.PaginationQuery) (*models.PriceGroupSettings, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "priceGroupRepo.GetAllPriceGroup")
 	defer span.Finish()
 
@@ -68,6 +85,7 @@ func (r *priceGroupRepo) GetAllPriceGroup(ctx context.Context, query *utils.Pagi
 	return n, nil
 
 }
+*/
 
 /*
 span, ctx := opentracing.StartSpanFromContext(ctx, "priceGroupRepo.GetNews")
@@ -102,7 +120,7 @@ span, ctx := opentracing.StartSpanFromContext(ctx, "priceGroupRepo.GetNews")
 	return priceGroupLis, nil
 */
 
-func (r *priceGroupRepo) Update(ctx context.Context, priceGroup *models.PriceGroupSettings) (*models.PriceGroupSettings, error) {
+/*func (r *priceGroupRepo) Update(ctx context.Context, priceGroup *models.PriceGroupSettings) (*models.PriceGroupSettings, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "priceGroupRepo.Update")
 	defer span.Finish()
 
@@ -170,7 +188,6 @@ func (r *priceGroupRepo) GetAllPriceGroupNew(ctx context.Context, filterQuery st
 	if err = rows.Err(); err != nil {
 		return nil, errors.Wrap(err, "newsRepo.GetNews.rows.Err")
 	}
-	//fmt.Printf("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
 
 	return &models.PriceGroupSettingsList{
 		TotalCount: totalCount,
@@ -201,3 +218,4 @@ func (r *priceGroupRepo) Delete(ctx context.Context, id int) error {
 
 	return nil
 }
+*/

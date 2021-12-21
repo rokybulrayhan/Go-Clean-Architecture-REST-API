@@ -47,6 +47,8 @@ require (
 	github.com/swaggo/swag v1.7.0
 	github.com/uber/jaeger-client-go v2.25.0+incompatible
 	github.com/uber/jaeger-lib v2.4.0+incompatible
+	github.com/uptrace/bun v1.0.20
+	github.com/uptrace/bun/dialect/pgdialect v1.0.20
 	github.com/yuin/gopher-lua v0.0.0-20200816102855-ee81675732da // indirect
 	go.uber.org/multierr v1.6.0 // indirect
 	go.uber.org/zap v1.16.0

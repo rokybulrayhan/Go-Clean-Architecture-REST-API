@@ -13,6 +13,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/labstack/echo/v4"
 	"github.com/minio/minio-go/v7"
+	"github.com/uptrace/bun"
 
 	"github.com/AleksK1NG/api-mc/config"
 	_ "github.com/AleksK1NG/api-mc/docs"
@@ -30,15 +31,16 @@ const (
 type Server struct {
 	echo        *echo.Echo
 	cfg         *config.Config
-	db          *sqlx.DB
+	db          *bun.DB
+	db1         *sqlx.DB
 	redisClient *redis.Client
 	awsClient   *minio.Client
 	logger      logger.Logger
 }
 
 // NewServer New Server constructor
-func NewServer(cfg *config.Config, db *sqlx.DB, redisClient *redis.Client, awsS3Client *minio.Client, logger logger.Logger) *Server {
-	return &Server{echo: echo.New(), cfg: cfg, db: db, redisClient: redisClient, awsClient: awsS3Client, logger: logger}
+func NewServer(cfg *config.Config, db1 *sqlx.DB, db *bun.DB, redisClient *redis.Client, awsS3Client *minio.Client, logger logger.Logger) *Server {
+	return &Server{echo: echo.New(), cfg: cfg, db1: db1, db: db, redisClient: redisClient, awsClient: awsS3Client, logger: logger}
 }
 
 func (s *Server) Run() error {

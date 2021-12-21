@@ -2,14 +2,12 @@ package usecase
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/AleksK1NG/api-mc/config"
 	"github.com/AleksK1NG/api-mc/internal/models"
 	price_group "github.com/AleksK1NG/api-mc/internal/price_group_settings"
 
 	"github.com/AleksK1NG/api-mc/pkg/logger"
-	"github.com/AleksK1NG/api-mc/pkg/utils"
 	"github.com/opentracing/opentracing-go"
 )
 
@@ -41,6 +39,7 @@ func (u *priceGroupUC) GetAllByNewsID(ctx context.Context, priceGroupID int) (*m
 	//ctx, priceGroupID, query)
 }
 
+/*
 func (u *priceGroupUC) GetAllPriceGroup(ctx context.Context, query *utils.PaginationQuery) (*models.PriceGroupSettings, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "commentsUC.GetAllByNewsID")
 	defer span.Finish()
@@ -48,6 +47,7 @@ func (u *priceGroupUC) GetAllPriceGroup(ctx context.Context, query *utils.Pagina
 	return u.priceGroupRepo.GetAllPriceGroup(ctx, query)
 	//ctx, priceGroupID, query)
 }
+*/
 
 func (u *priceGroupUC) Create(ctx context.Context, priceGroup *models.PriceGroupSettings) (*models.PriceGroupSettings, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "priceGroupUC.Create")
@@ -71,7 +71,7 @@ func (u *priceGroupUC) Create(ctx context.Context, priceGroup *models.PriceGroup
 	}
 
 	if err = u.redisRepo.DeletePriceGroupCtx(ctx, "price_group_redis"); err != nil {
-		fmt.Printf("LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLl")
+
 		u.logger.Errorf("priceGroup.create.DeleteNewsCtx: %v", err)
 	}
 
@@ -79,7 +79,7 @@ func (u *priceGroupUC) Create(ctx context.Context, priceGroup *models.PriceGroup
 }
 
 // Update priceGroup item
-
+/*
 func (u *priceGroupUC) Update(ctx context.Context, priceGroup *models.PriceGroupSettings) (*models.PriceGroupSettings, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "priceGroupUC.Update")
 	defer span.Finish()
@@ -91,7 +91,9 @@ func (u *priceGroupUC) Update(ctx context.Context, priceGroup *models.PriceGroup
 
 	return updatedUser, nil
 }
+*/
 
+/*
 func (u *priceGroupUC) GetAllPriceGroupNew(ctx context.Context, filterQuery string, pq *utils.PaginationQuery) (*models.PriceGroupSettingsList, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "price_group.GetAllPriceGroupNew")
 	priceGroupBase, err := u.redisRepo.GetPriceGroupCtx(ctx, "price_group_redis")
@@ -114,7 +116,8 @@ func (u *priceGroupUC) GetAllPriceGroupNew(ctx context.Context, filterQuery stri
 
 	return u.priceGroupRepo.GetAllPriceGroupNew(ctx, filterQuery, pq)
 }
-
+*/
+/*
 func (u *priceGroupUC) Delete(ctx context.Context, newsID int) error {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "newsUC.Delete")
 	defer span.Finish()
@@ -133,3 +136,4 @@ func (u *priceGroupUC) Delete(ctx context.Context, newsID int) error {
 func (u *priceGroupUC) getKeyWithPrefix(newsID string) string {
 	return fmt.Sprintf("%s: %s", basePrefix, newsID)
 }
+*/

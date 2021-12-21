@@ -11,9 +11,9 @@ import (
 func MapPriceGroupRoutes(priceGroup *echo.Group, h price_group.Handlers, mw *middleware.MiddlewareManager) {
 
 	priceGroup.GET("/group/:priceGroup_id", h.GetAllByNewsID())
-	priceGroup.GET("/", h.GetAllPriceGroup())
-	priceGroup.GET("/group", h.GetAllPriceGroupNew())
+	//priceGroup.GET("/", h.GetAllPriceGroup())
+	//priceGroup.GET("/group", h.GetAllPriceGroupNew())
 	priceGroup.POST("/group/create", h.Create())
-	priceGroup.PUT("/group/update/:id", h.Update())
-	priceGroup.DELETE("/group/delete/:id", h.Delete())
+	//priceGroup.PUT("/group/update/:id", h.Update())
+	//	priceGroup.DELETE("/group/delete/:id", h.Delete())
 }

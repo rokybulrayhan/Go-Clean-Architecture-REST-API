@@ -62,6 +62,7 @@ func (h *priceGroupHandlers) GetAllByNewsID() echo.HandlerFunc {
 	}
 }
 
+/*
 func (h *priceGroupHandlers) GetAllPriceGroup() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		span, ctx := opentracing.StartSpanFromContext(utils.GetRequestCtx(c), "priceGroupHandlers.GetAllByNewsID")
@@ -75,8 +76,8 @@ func (h *priceGroupHandlers) GetAllPriceGroup() echo.HandlerFunc {
 			utils.LogResponseError(c, h.logger, err)
 			return c.JSON(httpErrors.ErrorResponse(err))
 		}
-		*/
-
+*/
+/*
 		pq, err := utils.GetPaginationFromCtx(c)
 		if err != nil {
 			utils.LogResponseError(c, h.logger, err)
@@ -92,6 +93,7 @@ func (h *priceGroupHandlers) GetAllPriceGroup() echo.HandlerFunc {
 		return c.JSON(http.StatusOK, commentsList)
 	}
 }
+*/
 
 func (h priceGroupHandlers) Create() echo.HandlerFunc {
 	//fmt.Println("jjjjjjjjjjjjjjjjjjjjjjjj")
@@ -116,6 +118,7 @@ func (h priceGroupHandlers) Create() echo.HandlerFunc {
 	}
 }
 
+/*
 func (h priceGroupHandlers) Update() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		span, ctx := opentracing.StartSpanFromContext(utils.GetRequestCtx(c), "priceGroupHandlers.Update")
@@ -144,7 +147,8 @@ func (h priceGroupHandlers) Update() echo.HandlerFunc {
 		return c.JSON(http.StatusOK, updatedPriceGroup)
 	}
 }
-
+*/
+/*
 func (h priceGroupHandlers) GetAllPriceGroupNew() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		span, ctx := opentracing.StartSpanFromContext(utils.GetRequestCtx(c), "priceGroupHandlers.GetPriceGroup")
@@ -189,7 +193,9 @@ func (h priceGroupHandlers) GetAllPriceGroupNew() echo.HandlerFunc {
 		return c.JSON(http.StatusOK, priceGroupList)
 	}
 }
+*/
 
+/*
 func (h priceGroupHandlers) Delete() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		span, ctx := opentracing.StartSpanFromContext(utils.GetRequestCtx(c), "newsHandlers.Delete")
@@ -210,3 +216,4 @@ func (h priceGroupHandlers) Delete() echo.HandlerFunc {
 		return c.NoContent(http.StatusOK)
 	}
 }
+*/

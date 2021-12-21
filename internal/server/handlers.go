@@ -45,9 +45,9 @@ func (s *Server) MapHandlers(e *echo.Echo) error {
 	)
 
 	// Init repositories
-	aRepo := authRepository.NewAuthRepository(s.db)
-	nRepo := newsRepository.NewNewsRepository(s.db)
-	cRepo := commentsRepository.NewCommentsRepository(s.db)
+	aRepo := authRepository.NewAuthRepository(s.db1)
+	nRepo := newsRepository.NewNewsRepository(s.db1)
+	cRepo := commentsRepository.NewCommentsRepository(s.db1)
 	sRepo := sessionRepository.NewSessionRepository(s.redisClient, s.cfg)
 	aAWSRepo := authRepository.NewAuthAWSRepository(s.awsClient)
 	authRedisRepo := authRepository.NewAuthRedisRepo(s.redisClient)
