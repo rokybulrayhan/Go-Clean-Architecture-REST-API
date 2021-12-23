@@ -7,7 +7,7 @@ type Handlers interface {
 	GetAllByNewsID() echo.HandlerFunc
 	//GetAllPriceGroup() echo.HandlerFunc
 	Create() echo.HandlerFunc
-	//Update() echo.HandlerFunc
-	//GetAllPriceGroupNew() echo.HandlerFunc
+	Update() echo.HandlerFunc
+	GetAllPriceGroupNew() echo.HandlerFunc
 	//Delete() echo.HandlerFunc
 }

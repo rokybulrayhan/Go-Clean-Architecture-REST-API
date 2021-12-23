@@ -2,12 +2,15 @@ package usecase
 
 import (
 	"context"
+	"fmt"
+	"strconv"
 
 	"github.com/AleksK1NG/api-mc/config"
 	"github.com/AleksK1NG/api-mc/internal/models"
 	price_group "github.com/AleksK1NG/api-mc/internal/price_group_settings"
 
 	"github.com/AleksK1NG/api-mc/pkg/logger"
+	"github.com/AleksK1NG/api-mc/pkg/utils"
 	"github.com/opentracing/opentracing-go"
 )
 
@@ -79,7 +82,7 @@ func (u *priceGroupUC) Create(ctx context.Context, priceGroup *models.PriceGroup
 }
 
 // Update priceGroup item
-/*
+
 func (u *priceGroupUC) Update(ctx context.Context, priceGroup *models.PriceGroupSettings) (*models.PriceGroupSettings, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "priceGroupUC.Update")
 	defer span.Finish()
@@ -91,32 +94,40 @@ func (u *priceGroupUC) Update(ctx context.Context, priceGroup *models.PriceGroup
 
 	return updatedUser, nil
 }
-*/
 
-/*
 func (u *priceGroupUC) GetAllPriceGroupNew(ctx context.Context, filterQuery string, pq *utils.PaginationQuery) (*models.PriceGroupSettingsList, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "price_group.GetAllPriceGroupNew")
-	priceGroupBase, err := u.redisRepo.GetPriceGroupCtx(ctx, "price_group_redis")
-	if err != nil {
-		u.logger.Errorf("priceGroup.GetNewsByID.GetNewsByIDCtx: %v", err)
-	}
-	if priceGroupBase != nil {
-		return priceGroupBase, nil
-	}
 	defer span.Finish()
+	//redis :=
+	//sales_price_group_list_page=2_size=6
+	fmt.Println(pq.Size)
+	moduleName := "sales_price_group_list"
+
+	redisModuleName := moduleName + "_page_" + strconv.FormatInt(int64(pq.Page), 10) + "_size_" + strconv.FormatInt(int64(pq.Size), 10)
+	fmt.Println(redisModuleName)
+	priceGroupBase, err := u.redisRepo.GetPriceGroupCtx(ctx, redisModuleName)
 	fmt.Println("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
+	fmt.Println(priceGroupBase, err)
+
+	if err != nil {
+		fmt.Println(err)
+		fmt.Println("5555555555555555555555555555555555555")
+		u.logger.Errorf("priceGroup.GetNewsByID.GetNewsByIDCtx: %v", err)
+		// return priceGroupBase, err
+	}
+
 	n, err := u.priceGroupRepo.GetAllPriceGroupNew(ctx, filterQuery, pq)
 	if err != nil {
 		return nil, err
 	}
-
-	if err = u.redisRepo.SetPriceGroupCtx(ctx, "price_group_redis", cacheDuration, n); err != nil {
+	//fmt.Println(n)
+	if err = u.redisRepo.SetPriceGroupCtx(ctx, redisModuleName, cacheDuration, n); err != nil {
 		u.logger.Errorf("newsUC.GetNewsByID.SetNewsCtx: %s", err)
 	}
 
 	return u.priceGroupRepo.GetAllPriceGroupNew(ctx, filterQuery, pq)
 }
-*/
+
 /*
 func (u *priceGroupUC) Delete(ctx context.Context, newsID int) error {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "newsUC.Delete")

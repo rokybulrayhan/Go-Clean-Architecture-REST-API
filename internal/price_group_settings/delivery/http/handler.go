@@ -118,7 +118,6 @@ func (h priceGroupHandlers) Create() echo.HandlerFunc {
 	}
 }
 
-/*
 func (h priceGroupHandlers) Update() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		span, ctx := opentracing.StartSpanFromContext(utils.GetRequestCtx(c), "priceGroupHandlers.Update")
@@ -147,12 +146,12 @@ func (h priceGroupHandlers) Update() echo.HandlerFunc {
 		return c.JSON(http.StatusOK, updatedPriceGroup)
 	}
 }
-*/
-/*
+
 func (h priceGroupHandlers) GetAllPriceGroupNew() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		span, ctx := opentracing.StartSpanFromContext(utils.GetRequestCtx(c), "priceGroupHandlers.GetPriceGroup")
 		defer span.Finish()
+		//	fmt.Println("999")
 
 		fmt.Println(len(c.Request().URL.Query()))
 		var filterQuery string
@@ -177,12 +176,13 @@ func (h priceGroupHandlers) GetAllPriceGroupNew() echo.HandlerFunc {
 
 		}
 		filterQuery = where + filterQuery
-		fmt.Println(filterQuery)
+
 		pq, err := utils.GetPaginationFromCtx(c)
 		if err != nil {
 			utils.LogResponseError(c, h.logger, err)
 			return c.JSON(httpErrors.ErrorResponse(err))
 		}
+		fmt.Println(filterQuery)
 
 		priceGroupList, err := h.priceGroupUC.GetAllPriceGroupNew(ctx, filterQuery, pq)
 		if err != nil {
@@ -193,7 +193,6 @@ func (h priceGroupHandlers) GetAllPriceGroupNew() echo.HandlerFunc {
 		return c.JSON(http.StatusOK, priceGroupList)
 	}
 }
-*/
 
 /*
 func (h priceGroupHandlers) Delete() echo.HandlerFunc {

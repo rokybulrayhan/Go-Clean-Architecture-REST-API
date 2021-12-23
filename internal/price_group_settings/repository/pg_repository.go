@@ -8,6 +8,7 @@ import (
 	"github.com/AleksK1NG/api-mc/internal/price_group_settings"
 	"github.com/uptrace/bun"
 
+	"github.com/AleksK1NG/api-mc/pkg/utils"
 	"github.com/opentracing/opentracing-go"
 )
 
@@ -39,6 +40,11 @@ func (r *priceGroupRepo) Create(ctx context.Context, priceGroup *models.PriceGro
 	//n := &models.PriceGroupSettings{}
 
 	m, err := r.db.NewInsert().Model(priceGroup).ExcludeColumn("updated_at", "id", "created_at", "updated_by", "deleted_at").Returning("*").Exec(ctx)
+	if err != nil {
+		//	fmt.Println(n.ID == 0)
+		//	fmt.Println(err)
+		return priceGroup, err
+	}
 	fmt.Println(m)
 	fmt.Println(err)
 
@@ -65,8 +71,8 @@ func (r *priceGroupRepo) GetAllByNewsID(ctx context.Context, priceGroupID int) (
 	//fmt.Println(priceGroupID)
 	err := r.db.NewSelect().Model(n).Where("id = ?", priceGroupID).Scan(ctx)
 	if err != nil {
-		fmt.Println(n.ID == 0)
-		fmt.Println(err)
+		//	fmt.Println(n.ID == 0)
+		//	fmt.Println(err)
 		return n, err
 	}
 
@@ -120,25 +126,18 @@ span, ctx := opentracing.StartSpanFromContext(ctx, "priceGroupRepo.GetNews")
 	return priceGroupLis, nil
 */
 
-/*func (r *priceGroupRepo) Update(ctx context.Context, priceGroup *models.PriceGroupSettings) (*models.PriceGroupSettings, error) {
+func (r *priceGroupRepo) Update(ctx context.Context, priceGroup *models.PriceGroupSettings) (*models.PriceGroupSettings, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "priceGroupRepo.Update")
 	defer span.Finish()
-
-	var n models.PriceGroupSettings
-	if err := r.db.QueryRowxContext(
-		ctx,
-		updatePriceGroup,
-		&priceGroup.Name,
-		&priceGroup.Description,
-		&priceGroup.CurrencyType,
-		&priceGroup.Active,
-		&priceGroup.UpdatedBy,
-		&priceGroup.ID,
-	).StructScan(&n); err != nil {
-		return nil, errors.Wrap(err, "priceGroupRepo.Update.QueryRowxContext")
+	_, err := r.db.NewUpdate().Model(priceGroup).
+		ExcludeColumn("created_at", "created_by", "updated_at").
+		Where("id = ?", priceGroup.ID).Returning("*").
+		Exec(ctx)
+	if err != nil {
+		return priceGroup, err
 	}
 
-	return &n, nil
+	return priceGroup, nil
 }
 
 func (r *priceGroupRepo) GetAllPriceGroupNew(ctx context.Context, filterQuery string, pq *utils.PaginationQuery) (*models.PriceGroupSettingsList, error) {
@@ -148,45 +147,71 @@ func (r *priceGroupRepo) GetAllPriceGroupNew(ctx context.Context, filterQuery st
 	//var getTotalCountDummy string
 
 	//getTotalCountDummy = ""
-	fmt.Println(ctx)
+	//fmt.Println(ctx)
 	fmt.Println(filterQuery)
-	getTotalCountDummy := "SELECT COUNT(id) FROM price_group_settings " + filterQuery
 
-	var totalCount int
-	if err := r.db.GetContext(ctx, &totalCount, getTotalCountDummy); err != nil {
-		return nil, errors.Wrap(err, "priceGroupRepo.GetNews.GetAllPriceGroupNew.totalCount")
-	}
+	//	getTotalCountDummy := "SELECT COUNT(id) FROM price_group_settings " + filterQuery
 
-	if totalCount == 0 {
-		return &models.PriceGroupSettingsList{
-			TotalCount: totalCount,
-			TotalPages: utils.GetTotalPages(totalCount, pq.GetSize()),
-			Page:       pq.GetPage(),
-			Size:       pq.GetSize(),
-			HasMore:    utils.GetHasMore(pq.GetPage(), totalCount, pq.GetSize()),
-			PriceGroup: make([]*models.PriceGroupSettings, 0),
-		}, nil
-	}
-
-	//getPriceGroup
-	getPriceGroupDummy := "SELECT * FROM price_group_settings " + filterQuery + " ORDER BY name, updated_at OFFSET $1 LIMIT $2"
-	var priceGroupList = make([]*models.PriceGroupSettings, 0, pq.GetSize())
-	rows, err := r.db.QueryxContext(ctx, getPriceGroupDummy, pq.GetOffset(), pq.GetLimit())
+	var priceGroup models.PriceGroupSettings
+	//fmt.Println(filterQuery)
+	totalCount, err := r.db.NewSelect().Model(&priceGroup).ScanAndCount(ctx)
 	if err != nil {
-		return nil, errors.Wrap(err, "newsRepo.GetNews.QueryxContext")
+		return nil, err
 	}
-	defer rows.Close()
+	//fmt.Println(priceGroupCnt)
+	fmt.Println(totalCount)
 
-	for rows.Next() {
-		n := &models.PriceGroupSettings{}
-		if err = rows.StructScan(n); err != nil {
-			return nil, errors.Wrap(err, "newsRepo.GetNews.StructScan")
+	/*
+		getTotalCountDummy := "SELECT COUNT(id) FROM price_group_settings " + filterQuery
+
+		var totalCount int
+		if err := r.db.GetContext(ctx, &totalCount, getTotalCountDummy); err != nil {
+			return nil, errors.Wrap(err, "priceGroupRepo.GetNews.GetAllPriceGroupNew.totalCount")
 		}
-		priceGroupList = append(priceGroupList, n)
-	}
 
-	if err = rows.Err(); err != nil {
-		return nil, errors.Wrap(err, "newsRepo.GetNews.rows.Err")
+		if totalCount == 0 {
+			return &models.PriceGroupSettingsList{
+				TotalCount: totalCount,
+				TotalPages: utils.GetTotalPages(totalCount, pq.GetSize()),
+				Page:       pq.GetPage(),
+				Size:       pq.GetSize(),
+				HasMore:    utils.GetHasMore(pq.GetPage(), totalCount, pq.GetSize()),
+				PriceGroup: make([]*models.PriceGroupSettings, 0),
+			}, nil
+		}
+
+		//getPriceGroup
+		getPriceGroupDummy := "SELECT * FROM price_group_settings " + filterQuery + " ORDER BY name, updated_at OFFSET $1 LIMIT $2"
+		var priceGroupList = make([]*models.PriceGroupSettings, 0, pq.GetSize())
+		rows, err := r.db.QueryxContext(ctx, getPriceGroupDummy, pq.GetOffset(), pq.GetLimit())
+		if err != nil {
+			return nil, errors.Wrap(err, "newsRepo.GetNews.QueryxContext")
+		}
+		defer rows.Close()
+
+		for rows.Next() {
+			n := &models.PriceGroupSettings{}
+			if err = rows.StructScan(n); err != nil {
+				return nil, errors.Wrap(err, "newsRepo.GetNews.StructScan")
+			}
+			priceGroupList = append(priceGroupList, n)
+		}
+
+		if err = rows.Err(); err != nil {
+			return nil, errors.Wrap(err, "newsRepo.GetNews.rows.Err")
+		}
+	*/
+	n := []*models.PriceGroupSettings{}
+	fmt.Println((pq.GetPage()))
+	var start int
+	if pq.GetPage() == 0 {
+		start = 0
+	} else {
+		start = (pq.GetPage() - 1) * pq.GetSize()
+	}
+	err = r.db.NewSelect().Model(&n).Offset(start).Limit(pq.GetSize()).Scan(ctx)
+	if err != nil {
+		return nil, err
 	}
 
 	return &models.PriceGroupSettingsList{
@@ -195,10 +220,11 @@ func (r *priceGroupRepo) GetAllPriceGroupNew(ctx context.Context, filterQuery st
 		Page:       pq.GetPage(),
 		Size:       pq.GetSize(),
 		HasMore:    utils.GetHasMore(pq.GetPage(), totalCount, pq.GetSize()),
-		PriceGroup: priceGroupList,
+		PriceGroup: n,
 	}, nil
 }
 
+/*
 func (r *priceGroupRepo) Delete(ctx context.Context, id int) error {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "newsRepo.Delete")
 	defer span.Finish()

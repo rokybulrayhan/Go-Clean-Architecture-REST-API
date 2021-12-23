@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"time"
 
 	"github.com/go-redis/redis/v8"
@@ -29,8 +30,10 @@ func (n *priceGroupRedisRepo) GetPriceGroupCtx(ctx context.Context, key string) 
 	defer span.Finish()
 
 	priceGroupBytes, err := n.redisClient.Get(ctx, key).Bytes()
+	fmt.Println(priceGroupBytes, err)
 	if err != nil {
-		return nil, errors.Wrap(err, "priceGroupRedisRepo.GetNewsByIDCtx.redisClient.Get")
+		fmt.Println("kllkjgguk----------------------------------------------")
+		return nil, errors.Wrap(err, "priceGroupRedisRepo.GetPriceGroupCtx.redisClient.Get")
 	}
 	priceGroupBase := &models.PriceGroupSettingsList{}
 	if err = json.Unmarshal(priceGroupBytes, priceGroupBase); err != nil {
